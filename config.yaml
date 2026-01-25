@@ -1,0 +1,37 @@
+ModelConfig:
+  model_name: "gpt-4"
+  version: "1.0"
+  max_tokens: 4096
+
+Models:
+  - model_name: "gpt-4"
+    version: "1.0"
+    max_tokens: 4096
+  - model_name: "claude"
+    version: "2.0"
+    max_tokens: 8192
+  - model_name: "gemini"
+    version: "1.5"
+    max_tokens: 2048
+
+Infrastructure:
+  Servers:
+    - name: "web-01"
+      ip: "192.168.1.10"
+      roles:
+        - "web"
+        - "api"
+    - name: "db-01"
+      ip: "192.168.1.20"
+      roles:
+        - "database"
+
+ModelsContainer:
+  description: "Production models"
+  models:
+    - model_name: "prod-gpt"
+      version: "3.0"
+      max_tokens: 16000
+    - model_name: "prod-claude"
+      version: "2.5"
+      max_tokens: 12000
