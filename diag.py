@@ -59,7 +59,6 @@ def go_func(plot_type: str = "Scatter", **kwargs):
 
 app = Dash()
 
-df = pd.read_csv("/Users/vanessamae/Documents/playground/python/NVDA.csv")
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
 
 DEFAULT_YAML = """\
