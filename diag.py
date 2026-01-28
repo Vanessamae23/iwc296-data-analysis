@@ -112,6 +112,14 @@ NVDA:
             column: timestamp                                                 
         y:                                                                    
             column: open
+AAPL:                                                                         
+    plot_source: "/Users/vanessamae/Documents/playground/python/NVDA.csv"     
+    plot_type: Scatter                                                        
+    plot_cols:                                                                
+        x:                                                                    
+            column: timestamp                                                 
+        y:                                                                    
+            column: open
 """
 
 columnDefs = columnDefs = [{'field': col_name, 'headerName': col_name } for col_name in df.columns]
@@ -125,69 +133,127 @@ grid = dag.AgGrid(
 )
 
 app.layout = html.Div([
+    # Header
     html.Div([
-        html.Div([grid], style={
-            'marginBottom': '16px',
-            'marginTop': '16px',
-            'display': 'block',
+        html.H1('BT Summary', style={
+            'margin': '0',
+            'fontSize': '22px',
+            'fontWeight': '700',
+            'color': '#1a1a1a',
+            'letterSpacing': '-0.3px',
         }),
-        html.Label('Config', style={
-            'fontWeight': '600',
-            'fontSize': '20px',
-            'color': '#444',
-            'marginBottom': '6px',
-            'display': 'block',
-        }),
-        dcc.Textarea(
-            id='yaml-input',
-            value=DEFAULT_YAML,
-            style={
-                'width': '100%',
-                'height': '160px',
-                'fontFamily': 'monospace',
-                'fontSize': '13px',
-                'padding': '10px',
-                'border': '1px solid #ccc',
-                'borderRadius': '4px',
-                'resize': 'vertical',
-                'backgroundColor': '#fff',
-                'lineHeight': '1.5',
-            },
-        ),
-        html.Button('Render', id='render-btn', n_clicks=0, style={
-            'marginTop': '10px',
-            'padding': '8px 24px',
-            'fontFamily': 'Arial, sans-serif',
+        html.P('YAML-driven data explorer', style={
+            'margin': '4px 0 0 0',
             'fontSize': '13px',
-            'fontWeight': '600',
-            'color': '#fff',
-            'backgroundColor': '#1a1a1a',
-            'border': 'none',
-            'borderRadius': '4px',
-            'cursor': 'pointer',
-        }),
-        html.Div(id='yaml-error', style={
-            'color': '#d32f2f',
-            'fontSize': '12px',
-            'marginTop': '6px',
+            'color': '#888',
         }),
     ], style={
-        'padding': '16px 20px',
-        'backgroundColor': '#fafafa',
-        'borderBottom': '1px solid #e0e0e0',
-        'borderRadius': '6px 6px 0 0',
+        'padding': '20px 24px',
+        'borderBottom': '1px solid #e8e8e8',
     }),
 
-    dcc.Graph(id='indicator-graphic', style={'padding': '0 10px'}),
+    # Main content: sidebar + chart
+    html.Div([
+
+        # Left sidebar: grid + config
+        html.Div([
+            html.Div([
+                html.Label('Data Preview', style={
+                    'fontWeight': '600',
+                    'fontSize': '11px',
+                    'color': '#999',
+                    'textTransform': 'uppercase',
+                    'letterSpacing': '0.5px',
+                    'marginBottom': '10px',
+                    'display': 'block',
+                }),
+                html.Div([grid], style={
+                    'borderRadius': '4px',
+                    'overflow': 'hidden',
+                    'border': '1px solid #e8e8e8',
+                }),
+            ], style={'marginBottom': '20px'}),
+
+            html.Div([
+                html.Label('Config', style={
+                    'fontWeight': '600',
+                    'fontSize': '11px',
+                    'color': '#999',
+                    'textTransform': 'uppercase',
+                    'letterSpacing': '0.5px',
+                    'marginBottom': '10px',
+                    'display': 'block',
+                }),
+                dcc.Textarea(
+                    id='yaml-input',
+                    value=DEFAULT_YAML,
+                    style={
+                        'width': '100%',
+                        'height': '320px',
+                        'fontFamily': '"SF Mono", "Fira Code", "Consolas", monospace',
+                        'fontSize': '12px',
+                        'padding': '12px',
+                        'border': '1px solid #e0e0e0',
+                        'borderRadius': '4px',
+                        'resize': 'vertical',
+                        'backgroundColor': '#1e1e1e',
+                        'color': '#d4d4d4',
+                        'lineHeight': '1.6',
+                        'outline': 'none',
+                        'boxSizing': 'border-box',
+                    },
+                ),
+                html.Div([
+                    html.Button('Render', id='render-btn', n_clicks=0, style={
+                        'padding': '8px 28px',
+                        'fontFamily': 'Arial, sans-serif',
+                        'fontSize': '13px',
+                        'fontWeight': '600',
+                        'color': '#fff',
+                        'backgroundColor': '#2563eb',
+                        'border': 'none',
+                        'borderRadius': '6px',
+                        'cursor': 'pointer',
+                        'transition': 'background-color 0.15s',
+                    }),
+                    html.Div(id='yaml-error', style={
+                        'color': '#ef4444',
+                        'fontSize': '12px',
+                        'marginLeft': '12px',
+                        'display': 'inline-block',
+                        'verticalAlign': 'middle',
+                    }),
+                ], style={'marginTop': '12px'}),
+            ]),
+        ], style={
+            'width': '380px',
+            'flexShrink': '0',
+            'padding': '20px 24px',
+            'borderRight': '1px solid #e8e8e8',
+            'backgroundColor': '#fafafa',
+            'overflowY': 'auto',
+        }),
+
+        # Right: chart area
+        html.Div([
+            dcc.Graph(id='indicator-graphic', style={
+                'height': '100%',
+            }),
+        ], style={
+            'flex': '1',
+            'padding': '16px',
+            'minHeight': '600px',
+        }),
+
+    ], style={
+        'display': 'flex',
+        'minHeight': 'calc(100vh - 100px)',
+    }),
 
 ], style={
     'fontFamily': 'Arial, sans-serif',
-    'maxWidth': '1200px',
-    'margin': '30px auto',
     'backgroundColor': '#fff',
-    'borderRadius': '6px',
-    'boxShadow': '0 1px 4px rgba(0,0,0,0.1)',
-    'border': '1px solid #e0e0e0',
+    'minHeight': '100vh',
 })
 
 @callback(
@@ -210,7 +276,7 @@ def update_graph(n_clicks, yaml_str):
 
     titles = list(config.keys())
     n = len(titles)
-    n_cols = 4
+    n_cols = 2
     n_rows = max(1, (n + n_cols - 1) // n_cols)
 
     fig = make_subplots(
@@ -253,17 +319,21 @@ def update_graph(n_clicks, yaml_str):
         plot_kwargs = graph_cfg.get('plot_kwargs', {})
         trace = go_func(plot_type, **col_data, **plot_kwargs)
         fig.add_trace(trace, row=row, col=col)
+        fig.update(layout_xaxis_rangeslider_visible=False)
 
     fig.update_layout(
-        height=400 * n_rows,
-        margin={'l': 40, 'b': 40, 't': 40, 'r': 0},
-        hovermode='closest',
-        font=dict(family='Arial, sans-serif'),
-        plot_bgcolor='#fafafa',
+        height=max(500, 380 * n_rows),
+        margin={'l': 48, 'b': 40, 't': 48, 'r': 24},
+        hovermode='x unified',
+        font=dict(family='Arial, sans-serif', size=12, color='#444'),
+        plot_bgcolor='#fff',
+        paper_bgcolor='#fff',
         showlegend=False,
     )
-    fig.update_xaxes(gridcolor='#e0e0e0')
-    fig.update_yaxes(gridcolor='#e0e0e0')
+    fig.update_xaxes(gridcolor='#f0f0f0', zeroline=False, showline=True, linecolor='#e0e0e0')
+    fig.update_yaxes(gridcolor='#f0f0f0', zeroline=False, showline=True, linecolor='#e0e0e0')
+    for annotation in fig['layout']['annotations']:
+        annotation['font'] = dict(size=13, color='#333', family='Arial, sans-serif')
 
     return fig, ''
 
