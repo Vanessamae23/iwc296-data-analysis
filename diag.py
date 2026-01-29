@@ -4,6 +4,7 @@ import pandas as pd
 import yaml
 import dash_ag_grid as dag
 import importlib
+import dash_monaco_editor
 
 def resolve_func(func_reference_name):
     split_func = func_reference_name.rsplit(".", 1)
@@ -62,7 +63,7 @@ app = Dash()
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
 
 DEFAULT_YAML = """\
-DEFAULT:
+PLOT_VARIABLE:
     plot_type: Ohlc
     plot_cols:
         x:
@@ -184,24 +185,13 @@ app.layout = html.Div([
                     'marginBottom': '10px',
                     'display': 'block',
                 }),
-                dcc.Textarea(
+                dash_monaco_editor.DashMonacoEditor(
                     id='yaml-input',
                     value=DEFAULT_YAML,
-                    style={
-                        'width': '100%',
-                        'height': '320px',
-                        'fontFamily': '"SF Mono", "Fira Code", "Consolas", monospace',
-                        'fontSize': '12px',
-                        'padding': '12px',
-                        'border': '1px solid #e0e0e0',
-                        'borderRadius': '4px',
-                        'resize': 'vertical',
-                        'backgroundColor': '#1e1e1e',
-                        'color': '#d4d4d4',
-                        'lineHeight': '1.6',
-                        'outline': 'none',
-                        'boxSizing': 'border-box',
-                    },
+                    height='90vh',
+                    language='yaml',
+                    theme="vs-dark"
+                    
                 ),
                 html.Div([
                     html.Button('Render', id='render-btn', n_clicks=0, style={
